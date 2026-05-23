@@ -116,6 +116,19 @@ Cambiar estado:
 
 La cadena de conexion se lee desde `ConnectionStrings__DefaultConnection`, appsettings o variables de entorno. En Docker Compose se inyecta como variable simulando App Service Configuration o Key Vault.
 
+## Docker
+ Ejecutar: `docker compose up --build`
+ 
+ Url Health: `http://localhost:8080/health`
+ Url Swagger: `http://localhost:8080/swagger`
+
+ Contenedores activos: `docker ps`
+ Logs: `docker compose logs`
+ Apagar docker: `docker compose down`
+ <img width="1309" height="669" alt="image" src="https://github.com/user-attachments/assets/08b74f45-4e15-4c00-85f2-bad9c951090a" />
+
+  
+
 ## 8. Ejercicio de Migración — Web Forms a .NET 8
 
 Problemas identificados en el codigo legado:
