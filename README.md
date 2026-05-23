@@ -116,48 +116,70 @@ Cambiar estado:
 
 La cadena de conexion se lee desde `ConnectionStrings__DefaultConnection`, appsettings o variables de entorno. En Docker Compose se inyecta como variable simulando App Service Configuration o Key Vault.
 
-## Migracion Web Forms a .NET 8
+## 8. Ejercicio de Migración — Web Forms a .NET 8
 
 Problemas identificados en el codigo legado:
 
-1. Credenciales hardcodeadas en el code-behind.
+1. Credenciales hardcodeadas en el code-behind. (No estan encriptadas BPCript por ejemplo comp un algoritmo válido o colocado en un archivo json)
 2. SQL concatenado, vulnerable a SQL Injection.
-3. Logica de UI, validacion, acceso a datos y negocio mezcladas.
-4. Sin manejo global de errores ni logging.
+3. Logica de UI, validacion, acceso a datos y negocio mezcladas. (Sin separacion de estructura)
+4. Sin manejo global de errores ni logging. 
 5. Uso de `DateTime.Now` sin criterio UTC.
 6. Estado guardado en `Session`, dificil de escalar en cloud.
-7. Sin pruebas unitarias ni contratos claros.
+7. Sin pruebas unitarias.
 
-Reescritura equivalente:
+Ejemplo de Reescritura equivalente:
 
 ```csharp
-[HttpPost]
-public async Task<IActionResult> Crear([FromBody] CrearSolicitudRequest request, CancellationToken ct)
-{
-    var created = await service.CrearAsync(request, ct);
-    return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
-}
+    /// <summary>
+    /// Guardar Solicitud
+    /// </summary>
+    /// <param name="request"></param>
+    /// <returns> IActionResult </returns>
+    [HttpPost]
+    public async Task<IActionResult> Crear([FromBody] CrearSolicitudRequest request, CancellationToken ct)
+    {
+        try
+        {
+            var created = await service.CrearAsync(request, ct);
+
+            if (created.Id > 0)
+            {
+                return Ok(created);
+            }
+            else
+            {
+                return BadRequest(created);
+            }
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
 ```
 
 La validacion queda en FluentValidation, la persistencia en EF Core y los errores en middleware global.
 
-## Liderazgo tecnico
+## 9. Preguntas de Liderazgo Técnico
 
-### Plan de migracion gradual
+### ¿Como planificarías la migración completa del sistema legado en etapas graduales?
 
-Primero haria discovery del sistema legado, inventario de pantallas, procesos criticos, datos y dependencias. Luego construiria APIs nuevas por bounded context, empezando por modulos de bajo riesgo. Usaria strangler pattern para reemplazar funciones gradualmente, manteniendo pruebas de regresion y monitoreo.
+Primero haria una investigación y estudio del sistema legacy, inventario de pantallas, procesos criticos, datos y dependencias. Luego construiria APIs nuevas por bounded context, empezando por modulos de bajo riesgo. Usaria microservicios para reemplazar funciones gradualmente, manteniendo pruebas de regresion y monitoreo.
 
-### Operacion paralela legado/nuevo
+### ¿Qué estrategia usarías si el sistema legado debe operar en paralelo durante la transición?
 
-Usaria convivencia temporal con sincronizacion controlada de datos, feature flags, rutas por modulo y logs comparativos. Para evitar inconsistencias definiria una fuente de verdad por entidad durante la transicion.
+Usaria convivencia temporal con sincronizacion controlada de datos y rutas por modulo y logs comparativos. Para evitar inconsistencias definiria una fuente de verdad por entidad durante la transicion.
 
-### Equipo de 3 desarrolladores
+### ¿Como organizarías a un equipo de 3 desarrolladores para este módulo? (roles, code reviews, ramas Git)
 
-- Dev 1: API/Application y reglas de negocio.
-- Dev 2: Infrastructure, EF Core, Rick and Morty client y Docker.
-- Dev 3: pruebas, documentacion, CI/CD y hardening cloud.
+- Dev 1: API/Application y reglas de negocio,  Infrastructure, EF Core, Rick and Morty client y Docker (Persobajes).
+- Dev 2: Frontend, API/Application y reglas de negocio,  Infrastructure (Solicitudes).
+- Dev 3: pruebas, documentacion, CI/CD.
 
-Flujo Git: ramas cortas por feature, pull requests obligatorios, minimo 1 aprobacion, validacion de build/tests antes de merge a `main`.
+- Ante todo apoyarse como equipo antes posibles riesgos de entrega para llegar al objetivo de publicación del API.
+
+Flujo Git: ramas cortas por feature, pull requests obligatorios, minimo una aprobación para envio a los otros ambientes, validacion de build/tests antes de merge a `main`.
 
 ## Pruebas
 
@@ -167,4 +189,4 @@ dotnet test tests/IntergalaxyTech.Tests/IntergalaxyTech.Tests.csproj
 
 ## Herramientas IA utilizadas
 
-Se utilizo ChatGPT como apoyo para estructurar la solucion, generar boilerplate inicial, README y recomendaciones de arquitectura. El criterio tecnico, validacion y ajustes finales deben ser revisados por el candidato.
+Se utilizó ChatGPT como apoyo para estructurar la solución, generar estructura inicial, README y recomendaciones de arquitectura. 
