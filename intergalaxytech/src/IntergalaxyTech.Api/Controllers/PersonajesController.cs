@@ -26,7 +26,8 @@ public class PersonajesController(PersonajeService service) : ControllerBase
             }
             else
             {
-                return NotFound("Error 404: No se encontro información para migrar.");
+                throw new KeyNotFoundException(
+                "No existen datos con los filtros seleccionados.");
             }
         }
         catch (Exception ex)
@@ -55,7 +56,8 @@ public class PersonajesController(PersonajeService service) : ControllerBase
             }
             else
             {
-                return NotFound("Error 404: No existe datos con los filtro seleccionados.");
+                throw new KeyNotFoundException(
+                "No existen datos con los filtros seleccionados.");
             }
         }
         catch (Exception ex)
@@ -81,7 +83,11 @@ public class PersonajesController(PersonajeService service) : ControllerBase
             }
             else
             {
-                return NotFound("Error 404: No existe datos con los filtro seleccionados.");
+                return NotFound(new
+                {
+                    success = false,
+                    message = "No existen datos con los filtros seleccionados."
+                });
             }
         }
         catch (Exception ex)

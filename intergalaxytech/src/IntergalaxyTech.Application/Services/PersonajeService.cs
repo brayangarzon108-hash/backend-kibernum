@@ -18,6 +18,11 @@ public class PersonajeService
         _client = client; _repo = repo; _uow = uow; _logger = logger;
     }
 
+    /// <summary>
+    ///  Guardar Importacion de personas de Api externa a Base de datos local
+    /// </summary>
+    /// <param name="request"></param>
+    /// <returns> IActionResult </returns>
     public async Task<ImportarPersonajesResponse> ImportarAsync(ImportarPersonajesRequest request, CancellationToken ct)
     {
         var importados = 0; var actualizados = 0;
@@ -65,12 +70,25 @@ public class PersonajeService
         return new ImportarPersonajesResponse(importados, actualizados);
     }
 
+    /// <summary>
+    /// Consulta todos los registros de bases de datos con paginador
+    /// </summary>
+    /// <param name="page"></param>
+    ///  <param name="pageSize"></param>
+    ///  <param name="nombre"></param>
+    ///  <param name="estado"></param>
+    /// <returns> IActionResult </returns>
     public async Task<PagedResult<PersonajeDto>> GetPagedAsync(int page, int pageSize, string? nombre, string? estado, CancellationToken ct)
     {
         var data = await _repo.GetPagedAsync(page, pageSize, nombre, estado, ct);
         return new PagedResult<PersonajeDto>(data.Items.Select(ToDto).ToList(), data.Page, data.PageSize, data.TotalCount);
     }
 
+    /// <summary>
+    /// Consulta registro de evento especifico 
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns> IActionResult </returns>
     public async Task<PersonajeDto> GetByIdAsync(int id, CancellationToken ct)
     {
         var p = await _repo.GetByIdAsync(id, ct) ?? throw new KeyNotFoundException("Personaje no encontrado");
