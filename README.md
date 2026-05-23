@@ -1,13 +1,13 @@
 # IntergalaxyTech API - Prueba Tecnica Lead .NET
 
-API REST en .NET 8 para importar personajes de Rick and Morty y gestionar solicitudes de contratacion.
+API REST en .NET 8 para importar personajes de Rick and Morty y gestionar solicitudes de evento.
 
 ## Arquitectura elegida
 
 Se implementa Clean Architecture simplificada:
 
-- **Domain**: entidades y reglas de negocio, por ejemplo transiciones validas de `Solicitud`.
-- **Application**: casos de uso, DTOs, validaciones e interfaces.
+- **Domain**: entidades y enum.
+- **Application**: lógica de negocio, DTOs, validaciones e interfaces.
 - **Infrastructure**: EF Core, repositorios y cliente externo Rick and Morty.
 - **API**: controladores, Swagger, health check y middleware global de errores.
 
@@ -28,7 +28,7 @@ dotnet run --project src/IntergalaxyTech.Api/IntergalaxyTech.Api.csproj
 Swagger:
 
 ```txt
-http://localhost:5000/swagger
+http://localhost:5000/swagger (El puerto puede cambiar de acuerdo al equipo local utilizado)
 ```
 
 Health check:
@@ -46,7 +46,7 @@ docker compose up --build
 Swagger:
 
 ```txt
-http://localhost:8080/swagger
+http://localhost:8080/swagger (El puerto puede cambiar de acuerdo al equipo local utilizado)
 ```
 
 ## EF Core Migrations
@@ -61,15 +61,15 @@ La API tambien ejecuta `Database.Migrate()` al iniciar para facilitar la prueba 
 
 ## Endpoints principales
 
-- `POST /api/personajes/importar`
-- `GET /api/personajes?page=1&pageSize=20&nombre=Rick&estado=Alive`
-- `GET /api/personajes/{id}`
-- `POST /api/solicitudes`
-- `GET /api/solicitudes?estado=Pendiente&cliente=Juan`
-- `GET /api/solicitudes/{id}`
-- `PATCH /api/solicitudes/{id}/estado`
-- `GET /api/reportes/solicitudes-resumen`
-- `GET /health`
+- `POST /api/personajes/Importar`. Guardar Importacion de personas de Api externa a Base de datos local
+- `GET /api/personajes/GetAll/?page=1&pageSize=20&nombre=Rick&estado=Alive` . Consulta todos los registros de personsajes bases de datos con paginador
+- `GET /api/personajes/GetByID/{id}`. Consulta registro de personaje especifico 
+- `POST /api/solicitudes/Crear`. Guardar Solicitud nueva
+- `GET /api/solicitudes/GetAll/?estado=Pendiente&cliente=Juan`.  Consulta todos los registros de solicitudes guardados en bases de datos con paginador
+- `GET /api/solicitudes/GetById/{id}`. Consulta solicitudes de personaje especifico 
+- `PATCH /api/solicitudes/CambiarEstado/{id}`. Cambiar estado del evento solicitado
+- `GET /api/reportes/Resumen`. Consulta de reportes solicitados
+- `GET /health`. Consulta estado del API desde Azure.
 
 ## Ejemplos
 
