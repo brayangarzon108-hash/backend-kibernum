@@ -161,23 +161,25 @@ Ejemplo de Reescritura equivalente:
 
 La validacion queda en FluentValidation, la persistencia en EF Core y los errores en middleware global.
 
-## Liderazgo tecnico
+## 9. Preguntas de Liderazgo Técnico
 
-### Plan de migracion gradual
+### ¿Como planificarías la migración completa del sistema legado en etapas graduales?
 
-Primero haria discovery del sistema legado, inventario de pantallas, procesos criticos, datos y dependencias. Luego construiria APIs nuevas por bounded context, empezando por modulos de bajo riesgo. Usaria strangler pattern para reemplazar funciones gradualmente, manteniendo pruebas de regresion y monitoreo.
+Primero haria una investigación y estudio del sistema legacy, inventario de pantallas, procesos criticos, datos y dependencias. Luego construiria APIs nuevas por bounded context, empezando por modulos de bajo riesgo. Usaria microservicios para reemplazar funciones gradualmente, manteniendo pruebas de regresion y monitoreo.
 
-### Operacion paralela legado/nuevo
+### ¿Qué estrategia usarías si el sistema legado debe operar en paralelo durante la transición?
 
-Usaria convivencia temporal con sincronizacion controlada de datos, feature flags, rutas por modulo y logs comparativos. Para evitar inconsistencias definiria una fuente de verdad por entidad durante la transicion.
+Usaria convivencia temporal con sincronizacion controlada de datos y rutas por modulo y logs comparativos. Para evitar inconsistencias definiria una fuente de verdad por entidad durante la transicion.
 
-### Equipo de 3 desarrolladores
+### ¿Como organizarías a un equipo de 3 desarrolladores para este módulo? (roles, code reviews, ramas Git)
 
-- Dev 1: API/Application y reglas de negocio.
-- Dev 2: Infrastructure, EF Core, Rick and Morty client y Docker.
-- Dev 3: pruebas, documentacion, CI/CD y hardening cloud.
+- Dev 1: API/Application y reglas de negocio,  Infrastructure, EF Core, Rick and Morty client y Docker (Persobajes).
+- Dev 2: Frontend, API/Application y reglas de negocio,  Infrastructure (Solicitudes).
+- Dev 3: pruebas, documentacion, CI/CD.
 
-Flujo Git: ramas cortas por feature, pull requests obligatorios, minimo 1 aprobacion, validacion de build/tests antes de merge a `main`.
+- Ante todo apoyarse como equipo antes posibles riesgos de entrega para llegar al objetivo de publicación del API.
+
+Flujo Git: ramas cortas por feature, pull requests obligatorios, minimo una aprobación para envio a los otros ambientes, validacion de build/tests antes de merge a `main`.
 
 ## Pruebas
 
@@ -187,4 +189,4 @@ dotnet test tests/IntergalaxyTech.Tests/IntergalaxyTech.Tests.csproj
 
 ## Herramientas IA utilizadas
 
-Se utilizo ChatGPT como apoyo para estructurar la solucion, generar boilerplate inicial, README y recomendaciones de arquitectura. El criterio tecnico, validacion y ajustes finales deben ser revisados por el candidato.
+Se utilizó ChatGPT como apoyo para estructurar la solución, generar estructura inicial, README y recomendaciones de arquitectura. 
