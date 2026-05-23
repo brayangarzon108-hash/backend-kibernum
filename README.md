@@ -120,11 +120,15 @@ La cadena de conexion se lee desde `ConnectionStrings__DefaultConnection`, appse
  Ejecutar: `docker compose up --build`
  
  Url Health: `http://localhost:8080/health`
+ 
  Url Swagger: `http://localhost:8080/swagger`
 
  Contenedores activos: `docker ps`
+ 
  Logs: `docker compose logs`
+ 
  Apagar docker: `docker compose down`
+ 
  <img width="1309" height="669" alt="image" src="https://github.com/user-attachments/assets/08b74f45-4e15-4c00-85f2-bad9c951090a" />
 
   
