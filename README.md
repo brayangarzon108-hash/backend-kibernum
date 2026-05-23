@@ -116,27 +116,47 @@ Cambiar estado:
 
 La cadena de conexion se lee desde `ConnectionStrings__DefaultConnection`, appsettings o variables de entorno. En Docker Compose se inyecta como variable simulando App Service Configuration o Key Vault.
 
-## Migracion Web Forms a .NET 8
+## 8. Ejercicio de Migración — Web Forms a .NET 8
 
 Problemas identificados en el codigo legado:
 
-1. Credenciales hardcodeadas en el code-behind.
+1. Credenciales hardcodeadas en el code-behind. (No estan encriptadas BPCript por ejemplo comp un algoritmo válido o colocado en un archivo json)
 2. SQL concatenado, vulnerable a SQL Injection.
-3. Logica de UI, validacion, acceso a datos y negocio mezcladas.
-4. Sin manejo global de errores ni logging.
+3. Logica de UI, validacion, acceso a datos y negocio mezcladas. (Sin separacion de estructura)
+4. Sin manejo global de errores ni logging. 
 5. Uso de `DateTime.Now` sin criterio UTC.
 6. Estado guardado en `Session`, dificil de escalar en cloud.
-7. Sin pruebas unitarias ni contratos claros.
+7. Sin pruebas unitarias.
 
-Reescritura equivalente:
+Ejemplo de Reescritura equivalente:
 
 ```csharp
-[HttpPost]
-public async Task<IActionResult> Crear([FromBody] CrearSolicitudRequest request, CancellationToken ct)
-{
-    var created = await service.CrearAsync(request, ct);
-    return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
-}
+    /// <summary>
+    /// Guardar Solicitud
+    /// </summary>
+    /// <param name="request"></param>
+    /// <returns> IActionResult </returns>
+    [HttpPost]
+    public async Task<IActionResult> Crear([FromBody] CrearSolicitudRequest request, CancellationToken ct)
+    {
+        try
+        {
+            var created = await service.CrearAsync(request, ct);
+
+            if (created.Id > 0)
+            {
+                return Ok(created);
+            }
+            else
+            {
+                return BadRequest(created);
+            }
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
 ```
 
 La validacion queda en FluentValidation, la persistencia en EF Core y los errores en middleware global.
