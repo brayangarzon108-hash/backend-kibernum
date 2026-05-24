@@ -26,7 +26,7 @@ public class PersonajeService
     public async Task<ImportarPersonajesResponse> ImportarAsync(ImportarPersonajesRequest request, CancellationToken ct)
     {
         var importados = 0; var actualizados = 0;
-        for (var page = request.Page; page < request.MaxPages; page++)
+        for (var page = request.Page; page <= request.MaxPages; page++)
         {
             var response = await _client.GetCharactersAsync(page, request.Nombre, ct);
 

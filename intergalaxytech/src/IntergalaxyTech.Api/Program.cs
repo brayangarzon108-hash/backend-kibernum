@@ -27,6 +27,16 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHealthChecks().AddDbContextCheck<AppDbContext>();
+// Habilitar CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("CorsPolicy", builder =>
+    {
+        builder.AllowAnyOrigin() // Permitir todas las solicitudes de origen. O usa WithOrigins("http://localhost:8080") para permitir solo este dominio.
+               .AllowAnyMethod() // Permitir todos los métodos HTTP (GET, POST, etc.).
+               .AllowAnyHeader(); // Permitir todos los encabezados.
+    });
+});
 
 var app = builder.Build();
 
@@ -35,6 +45,8 @@ app.UseSwagger();
 app.UseSwaggerUI();
 app.MapHealthChecks("/health");
 app.MapControllers();
+// Usar la política CORS configurada
+app.UseCors("CorsPolicy");
 
 using (var scope = app.Services.CreateScope())
 {
