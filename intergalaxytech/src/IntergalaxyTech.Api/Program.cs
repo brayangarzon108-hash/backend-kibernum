@@ -7,6 +7,7 @@ using IntergalaxyTech.Infrastructure.Data;
 using IntergalaxyTech.Infrastructure.External;
 using IntergalaxyTech.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,7 +24,11 @@ builder.Services.AddHttpClient<IRickAndMortyClient, RickAndMortyClient>(client =
 {
     client.BaseAddress = new Uri(builder.Configuration["RickAndMorty:BaseUrl"]);
 });
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.Converters.Add(
+        new JsonStringEnumConverter());
+}); 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHealthChecks().AddDbContextCheck<AppDbContext>();
